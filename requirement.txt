@@ -3,9 +3,10 @@ torch
 torchvision
 easydict
 opencv-python
-numpy
+numpy==2.0.1
 torchsummary
 tensorboard
 scikit-learn
 tqdm
 matplotlib
+PyTurboJPEG
