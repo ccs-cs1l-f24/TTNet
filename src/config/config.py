@@ -51,7 +51,7 @@ def parse_configs():
     ####################################################################
     ##############     Dataloader and Running configs            #######
     ####################################################################
-    parser.add_argument('--working-dir', type=str, default='../../', metavar='PATH',
+    parser.add_argument('--working-dir', type=str, default='../', metavar='PATH',
                         help='the ROOT working directory')
     parser.add_argument('--no-val', action='store_true',
                         help='If true, use all data for training, no validation set')

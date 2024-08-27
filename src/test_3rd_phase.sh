@@ -1,7 +1,7 @@
 #!/bin/bash
 
 python test.py \
-  --working_dir '../' \
+  --working-dir '../' \
   --saved_fn 'ttnet_3rd_phase' \
   --gpu_idx 0 \
   --batch_size 1 \

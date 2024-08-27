@@ -36,6 +36,6 @@ def get_prediction_seg(pred_seg, seg_thresh):
     if pred_seg.is_cuda:
         pred_seg = pred_seg.cpu()
     pred_seg = torch.squeeze(pred_seg).numpy().transpose(1, 2, 0)
-    prediction_seg = (pred_seg > seg_thresh).astype(np.int)
+    prediction_seg = (pred_seg > seg_thresh).astype(int)
 
     return prediction_seg
