@@ -48,6 +48,8 @@ class Unbalance_Loss_Model(nn.Module):
                                                                 w=self.w, h=self.h,
                                                                 thresh_mask=self.thresh_ball_pos_mask,
                                                                 device=self.device)
+        print(torch.unique(target_ball_global))
+        exit()
         global_ball_loss = self.ball_loss_criterion(pred_ball_global, target_ball_global)
         total_loss = global_ball_loss * self.tasks_loss_weight[task_idx]
 

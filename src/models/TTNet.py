@@ -95,7 +95,6 @@ class BallDetection(nn.Module):
         x = self.dropout1d(self.relu(self.fc1(x)))
         x = self.dropout1d(self.relu(self.fc2(x)))
         out = self.sigmoid(self.fc3(x))
-
         return out, features, out_block2, out_block3, out_block4, out_block5
 
 
