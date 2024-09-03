@@ -60,6 +60,34 @@ def create_target_ball(ball_position_xy, sigma, w, h, thresh_mask, device):
 
     return target_ball_position
 
+def create_target_ball_right(ball_position_xy, sigma, w, h, thresh_mask, device):
+    """Create target for the ball detection stages
+
+    :param ball_position_xy: Position of the ball (x,y)
+    :param sigma: standard deviation (a hyperparameter)
+    :param w: width of the resize image
+    :param h: height of the resize image
+    :param thresh_mask: if values of 1D Gaussian < thresh_mask --> set to 0 to reduce computation
+    :param device: cuda() or cpu()
+    :return:
+    """
+    w, h = int(w), int(h)
+    target_ball_position_x = torch.zeros(w, device=device)
+    target_ball_position_y = torch.zeros(h, device=device)
+    # Only do the next step if the ball is existed
+    if (w > ball_position_xy[0] > 0) and (h > ball_position_xy[1] > 0):
+        # For x
+        x_pos = torch.arange(0, w, device=device)
+        target_ball_position_x = gaussian_1d(x_pos, ball_position_xy[0], sigma=sigma)
+        # For y
+        y_pos = torch.arange(0, h, device=device)
+        target_ball_position_y = gaussian_1d(y_pos, ball_position_xy[1], sigma=sigma)
+
+        target_ball_position_x[target_ball_position_x < thresh_mask] = 0.
+        target_ball_position_y[target_ball_position_y < thresh_mask] = 0.
+
+    return target_ball_position_x, target_ball_position_y
+
 
 def smooth_event_labelling(event_class, smooth_idx, event_frameidx):
     target_events = np.zeros((2,))

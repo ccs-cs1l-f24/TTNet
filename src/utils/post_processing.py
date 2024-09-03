@@ -22,6 +22,20 @@ def get_prediction_ball_pos(pred_ball, w, thresh_ball_pos_prob):
 
     return (prediction_ball_x, prediction_ball_y)
 
+def get_prediction_ball_pos_right(pred_ball, w, thresh_ball_pos_prob):
+    for pred_ball_coords in pred_ball:
+        if pred_ball_coords[0].is_cuda:
+            pred_ball_coords_x = pred_ball_coords[0].cpu()
+            pred_ball_coords_y = pred_ball_coords[1].cpu()
+        pred_ball_coords_x = pred_ball_coords_x.numpy()
+        pred_ball_coords_y = pred_ball_coords_y.numpy()
+        pred_ball_coords_x [pred_ball_coords_x  < thresh_ball_pos_prob] = 0.
+        pred_ball_coords_y [pred_ball_coords_y  < thresh_ball_pos_prob] = 0.
+        prediction_ball_x = np.argmax(pred_ball_coords_x)
+        prediction_ball_y = np.argmax(pred_ball_coords_y)
+
+        return (prediction_ball_x, prediction_ball_y)
+
 
 def prediction_get_events(pred_events, event_thresh):
     if pred_events.is_cuda:
