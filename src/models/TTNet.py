@@ -111,9 +111,10 @@ class BallDetection_right(nn.Module):
         self.convblock5 = ConvBlock(in_channels=128, out_channels=256)
         self.convblock6 = ConvBlock(in_channels=256, out_channels=256)
         self.fc1 = nn.Linear(in_features=2560, out_features=1792)
-        self.fc2 = nn.Linear(in_features=1792, out_features=896)
-        self.fcx = nn.Linear(in_features=896, out_features=320)
-        self.fcy = nn.Linear(in_features=896, out_features=128)
+        self.fcx1 = nn.Linear(in_features=1792, out_features=640)
+        self.fcy1 = nn.Linear(in_features=1792, out_features=256)
+        self.fcx2 = nn.Linear(in_features=640, out_features=320)
+        self.fcy2 = nn.Linear(in_features=256, out_features=128)
         self.dropout1d = nn.Dropout(p=dropout_p)
         self.sigmoid = nn.Sigmoid()
 
@@ -130,10 +131,14 @@ class BallDetection_right(nn.Module):
         x = self.dropout2d(features)
         x = x.contiguous().view(x.size(0), -1)
 
-        x = self.dropout1d(self.relu(self.fc1(x)))
-        x = self.dropout1d(self.relu(self.fc2(x)))
-        coordx = self.sigmoid(self.fcx(x))
-        coordy = self.sigmoid(self.fcy(x))
+        # input of fc1 is 2560 output is 1792, now x is a vector in shape 1792
+        feature = self.dropout1d(self.relu(self.fc1(x)))
+        # then parallel mode, makeing 1792 to 640 and 256
+        x = self.dropout1d(self.relu(self.fcx1(feature)))
+        y = self.dropout1d(self.relu(self.fcy1(feature)))
+        # now finally
+        coordx = self.sigmoid(self.fcx2(x))
+        coordy = self.sigmoid(self.fcy2(y))
         out = (coordx, coordy)
         return out, features, out_block2, out_block3, out_block4, out_block5
 
@@ -236,17 +241,19 @@ class TTNet(nn.Module):
   
         if self.ball_local_stage is not None:
             # Based on the prediction of the global stage, crop the original images
-            input_ball_local, cropped_params = self.__crop_original_batch__(resize_batch_input, pred_ball_global)
+            input_ball_local, cropped_params = self.__crop_original_batch_right__(resize_batch_input, pred_ball_global)
             # Get the ground truth of the ball for the local stage
             local_ball_pos_xy = self.__get_groundtruth_local_ball_pos__(org_ball_pos_xy, cropped_params)
+
             # Normalize the input before compute forward propagation
             pred_ball_local, local_features, *_ = self.ball_local_stage(self.__normalize__(input_ball_local))
+    
             # Only consider the events spotting if the model has the local stage for ball detection
             if self.events_spotting is not None:
                 pred_events = self.events_spotting(global_features, local_features)
         if self.segmentation is not None:
             pred_seg = self.segmentation(out_block2, out_block3, out_block4, out_block5)
-
+        
         return pred_ball_global, pred_ball_local, pred_events, pred_seg, local_ball_pos_xy
 
     def run_demo(self, resize_batch_input):
@@ -272,6 +279,7 @@ class TTNet(nn.Module):
 
     def __get_groundtruth_local_ball_pos__(self, org_ball_pos_xy, cropped_params):
         local_ball_pos_xy = torch.zeros_like(org_ball_pos_xy)  # no grad for torch.zeros_like output
+        
 
         for idx, params in enumerate(cropped_params):
             is_ball_detected, x_min, x_max, y_min, y_max, x_pad, y_pad = params
@@ -283,11 +291,13 @@ class TTNet(nn.Module):
                 # If the ball is outside of the cropped image --> set position to -1, -1 --> No ball
                 if (local_ball_pos_xy[idx, 0] >= self.w_resize) or (local_ball_pos_xy[idx, 1] >= self.h_resize) or (
                         local_ball_pos_xy[idx, 0] < 0) or (local_ball_pos_xy[idx, 1] < 0):
+
                     local_ball_pos_xy[idx, 0] = -1
                     local_ball_pos_xy[idx, 1] = -1
             else:
                 local_ball_pos_xy[idx, 0] = -1
                 local_ball_pos_xy[idx, 1] = -1
+
         return local_ball_pos_xy
 
     def __crop_original_batch__(self, resize_batch_input, pred_ball_global):
@@ -374,18 +384,23 @@ class TTNet(nn.Module):
         h_ratio = h_original / self.h_resize
         w_ratio = w_original / self.w_resize
         for pred_ball_global_mask_coords in converted_pred_ball_global:
+            pred_ball_global_mask_coords = list(pred_ball_global_mask_coords)
             pred_ball_global_mask_coords_x = pred_ball_global_mask_coords[0].clone().detach()
             pred_ball_global_mask_coords_y = pred_ball_global_mask_coords[1].clone().detach()
             pred_ball_global_mask_coords_x[pred_ball_global_mask_coords_x < self.thresh_ball_pos_mask] = 0.
             pred_ball_global_mask_coords_y[pred_ball_global_mask_coords_y < self.thresh_ball_pos_mask] = 0.
-
+            pred_ball_global_mask_coords[0] = pred_ball_global_mask_coords_x
+            pred_ball_global_mask_coords[1] = pred_ball_global_mask_coords_y 
+    
         # Crop the original images
         input_ball_local = torch.zeros_like(resize_batch_input)  # same shape with resize_batch_input, no grad
         original_batch_input = F.interpolate(resize_batch_input, (h_original, w_original))  # On GPU
         cropped_params = []
         for idx in range(batch_size):
-            pred_ball_pos_x = pred_ball_global_mask_coords_x[idx]
-            pred_ball_pos_y = pred_ball_global_mask_coords_y[idx]
+            pred_ball_global_mask_coords = converted_pred_ball_global[idx]
+            pred_ball_pos_x = pred_ball_global_mask_coords[0]
+            pred_ball_pos_y = pred_ball_global_mask_coords[1]
+
             # If the ball is not detected, we crop the center of the images, set ball_poss to [-1, -1]
             if (torch.sum(pred_ball_pos_x) == 0.) or (torch.sum(pred_ball_pos_y) == 0.):
                 # Assume the ball is in the center image
@@ -416,7 +431,7 @@ class TTNet(nn.Module):
             else:
                 input_ball_local[idx, :, :, :] = original_batch_input[idx, :, y_min:y_max, x_min: x_max]
             cropped_params.append([is_ball_detected, x_min, x_max, y_min, y_max, x_pad, y_pad])
-
+  
         return input_ball_local, cropped_params
 
 

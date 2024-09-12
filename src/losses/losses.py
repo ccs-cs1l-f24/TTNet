@@ -39,10 +39,11 @@ class Ball_Detection_Loss_right(nn.Module):
 
             x_target = target_ball[0]
             y_target = target_ball[1]
+
     
             loss_ball_x = - torch.mean(x_target * torch.log(x_pred + self.epsilon) + (1 - x_target) * torch.log(1 - x_pred + self.epsilon))
             loss_ball_y = - torch.mean(y_target * torch.log(y_pred + self.epsilon) + (1 - y_target) * torch.log(1 - y_pred + self.epsilon))
-
+      
             # Accumulate the loss
             loss_total += (loss_ball_x + loss_ball_y)
 

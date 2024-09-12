@@ -69,6 +69,8 @@ def parse_configs():
                         help='mini-batch size (default: 8), this is the total'
                              'batch size of all GPUs on the current node when using'
                              'Data Parallel or Distributed Data Parallel')
+    parser.add_argument('--distributed', type=bool, default=False,
+                        help="if its trained using multiple gpu")
     parser.add_argument('--print_freq', type=int, default=50, metavar='N',
                         help='print frequency (default: 50)')
     parser.add_argument('--checkpoint_freq', type=int, default=2, metavar='N',

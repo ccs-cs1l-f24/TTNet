@@ -41,6 +41,7 @@ def create_train_val_dataloader(configs):
 
     val_dataloader = None
     if not configs.no_val:
+ 
         val_transform = None
         val_sampler = None
         val_dataset = TTNet_Dataset(val_events_infor, configs.org_size, configs.input_size, transform=val_transform,

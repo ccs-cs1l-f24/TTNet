@@ -138,6 +138,7 @@ def get_events_infor(game_list, configs, dataset_type):
                 for sub_smooth_idx in sub_smooth_frame_indices:
                     img_path = os.path.join(images_dir, game_name, 'img_{:06d}.jpg'.format(sub_smooth_idx))
                     img_path_list.append(img_path)
+
                 last_f_idx = smooth_idx + num_frames_from_event
                 # Get ball position for the last frame in the sequence
                 if '{}'.format(last_f_idx) not in ball_annos.keys():
@@ -162,6 +163,7 @@ def get_events_infor(game_list, configs, dataset_type):
                 if (target_events[0] == 0) and (target_events[1] == 0):
                     event_class = 2
                 events_labels.append(event_class)
+
     return events_infor, events_labels
 
 

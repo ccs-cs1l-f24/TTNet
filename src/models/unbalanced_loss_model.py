@@ -69,19 +69,26 @@ class Unbalance_Loss_Model(nn.Module):
                                                                 w=self.w, h=self.h,
                                                                 thresh_mask=self.thresh_ball_pos_mask,
                                                                 device=self.device)
-     
+
+
         global_ball_loss = self.ball_loss_criterion(converted_pred_ball_global, target_ball_global)
         total_loss = global_ball_loss * self.tasks_loss_weight[task_idx]
   
         if pred_ball_local is not None:
             task_idx += 1
-            target_ball_local = torch.zeros_like(pred_ball_local)
+            converted_pred_ball_local = [(pred_ball_local[0][i], pred_ball_local[1][i]) for i in range(pred_ball_local[0].shape[0])]
+
+            target_ball_local_x = torch.zeros_like(pred_ball_local[0])
+            target_ball_local_y = torch.zeros_like(pred_ball_local[1])
+            # Create a list of tuples for each batch
+            target_ball_local = [(target_ball_local_x[i], target_ball_local_y[i]) for i in range(batch_size)]
             for sample_idx in range(batch_size):
-                target_ball_local[sample_idx] = create_target_ball(local_ball_pos_xy[sample_idx], sigma=self.sigma,
+                target_ball_local[sample_idx] = create_target_ball_right(local_ball_pos_xy[sample_idx], sigma=self.sigma,
                                                                    w=self.w, h=self.h,
                                                                    thresh_mask=self.thresh_ball_pos_mask,
                                                                    device=self.device)
-            local_ball_loss = self.ball_loss_criterion(pred_ball_local, target_ball_local)
+            local_ball_loss = self.ball_loss_criterion(converted_pred_ball_local, target_ball_local)
+
             total_loss += local_ball_loss * self.tasks_loss_weight[task_idx]
 
         if pred_events is not None:

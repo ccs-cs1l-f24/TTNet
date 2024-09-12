@@ -6,7 +6,6 @@
 python main.py \
   --working-dir '../' \
   --saved_fn 'ttnet_1st_phase' \
-  --no-val \
   --batch_size 8 \
   --num_workers 4 \
   --lr 0.001 \
