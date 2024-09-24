@@ -73,8 +73,33 @@ def create_test_dataloader(configs):
 
 if __name__ == '__main__':
     from config.config import parse_configs
-
     configs = parse_configs()
     configs.distributed = False  # For testing
+
+    # Create dataloaders
     train_dataloader, val_dataloader, train_sampler = create_train_val_dataloader(configs)
     print('len train_dataloader: {}, val_dataloader: {}'.format(len(train_dataloader), len(val_dataloader)))
+
+    test_dataloader = create_test_dataloader(configs)
+    print(f"len test_loader {len(test_dataloader)}")
+
+    # Get one batch from train_dataloader
+    for batch in train_dataloader:
+        # Assuming batch contains both input data and labels
+        inputs, labels = batch
+        print(f"Train batch data shape: {inputs.shape}")
+        print(f"Train batch labels shape: {labels.shape}")
+        break  # Exit after printing the first batch
+
+    # Get one batch from val_dataloader
+    for batch in val_dataloader:
+        inputs, labels = batch
+        print(f"Val batch data shape: {inputs.shape}")
+        print(f"Val batch labels shape: {labels.shape}")
+        break
+
+    # Get one batch from test_dataloader
+    for batch in test_dataloader:
+        # Test dataloader might have only inputs
+        print(f"Test batch data shape: {batch.shape}")
+        break
