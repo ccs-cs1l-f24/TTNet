@@ -26,7 +26,7 @@ An introduction of the project could be found [here (from the authors)](https://
 
 - **(Update 2024.09.12)**: The implementation could achieve comparative results with the reported results in the TTNet paper. Moreover, I have fixed the wrong implementation in the ball detection module, changed it to the original implementation just like in the paper! I have also provided completely training code in train.sh<br>
 
-- **(2024.09.12)**: The model can achieve **0.9611** on average iou, rmse global **10.4**, rmse local **2.8** rmse_overall: **63.8**, pce: **0.8876** spce: **0.9774**
+- **(2024.09.12)**: The model can achieve **0.9632** on average iou, rmse global **8.9**, rmse local **2.3** rmse_overall: **54.4**, pce: **0.8918** spce: **0.9808**
   
 ## 2. Getting Started
 
