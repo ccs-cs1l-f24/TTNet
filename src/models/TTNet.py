@@ -130,7 +130,6 @@ class BallDetection_right(nn.Module):
 
         x = self.dropout2d(features)
         x = x.contiguous().view(x.size(0), -1)
-
         # input of fc1 is 2560 output is 1792, now x is a vector in shape 1792
         feature = self.dropout1d(self.relu(self.fc1(x)))
         # then parallel mode, makeing 1792 to 640 and 256

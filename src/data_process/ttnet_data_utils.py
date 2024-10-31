@@ -98,6 +98,7 @@ def smooth_event_labelling(event_class, smooth_idx, event_frameidx):
     return target_events
 
 
+
 def get_events_infor(game_list, configs, dataset_type):
     """Get information of sequences of images based on events
 
@@ -167,6 +168,7 @@ def get_events_infor(game_list, configs, dataset_type):
     return events_infor, events_labels
 
 
+
 def train_val_data_separation(configs):
     """Seperate data to training and validation sets"""
     dataset_type = 'training'
@@ -185,6 +187,23 @@ def train_val_data_separation(configs):
                                                                                                         stratify=events_labels)
     return train_events_infor, val_events_infor, train_events_labels, val_events_labels
 
+def train_val_data_separation_detection(configs):
+    """Seperate data to training and validation sets"""
+    dataset_type = 'training'
+    events_infor, events_labels = get_events_infor(configs.train_game_list, configs, dataset_type)
+    if configs.no_val:
+        train_events_infor = events_infor
+        train_events_labels = events_labels
+        val_events_infor = None
+        val_events_labels = None
+    else:
+        train_events_infor, val_events_infor, train_events_labels, val_events_labels = train_test_split(events_infor,
+                                                                                                        events_labels,
+                                                                                                        shuffle=True,
+                                                                                                        test_size=configs.val_size,
+                                                                                                        random_state=configs.seed,
+                                                                                                        stratify=events_labels)
+    return train_events_infor, val_events_infor, train_events_labels, val_events_labels
 
 if __name__ == '__main__':
     from config.config import parse_configs
