@@ -209,11 +209,11 @@ class TTNet(nn.Module):
         super(TTNet, self).__init__()
         self.tasks = tasks
         self.ball_local_stage, self.events_spotting, self.segmentation = None, None, None
-        # self.ball_global_stage = BallDetection(num_frames_sequence=num_frames_sequence, dropout_p=dropout_p)
-        self.ball_global_stage = BallDetection_right(num_frames_sequence=num_frames_sequence, dropout_p=dropout_p)
+        self.ball_global_stage = BallDetection(num_frames_sequence=num_frames_sequence, dropout_p=dropout_p)
+        # self.ball_global_stage = BallDetection_right(num_frames_sequence=num_frames_sequence, dropout_p=dropout_p)
         if 'local' in tasks:
-            # self.ball_local_stage = BallDetection(num_frames_sequence=num_frames_sequence, dropout_p=dropout_p)
-            self.ball_local_stage = BallDetection_right(num_frames_sequence=num_frames_sequence, dropout_p=dropout_p)
+            self.ball_local_stage = BallDetection(num_frames_sequence=num_frames_sequence, dropout_p=dropout_p)
+            # self.ball_local_stage = BallDetection_right(num_frames_sequence=num_frames_sequence, dropout_p=dropout_p)
         if 'event' in tasks:
             self.events_spotting = EventsSpotting(dropout_p=dropout_p)
         if 'seg' in tasks:

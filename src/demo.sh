@@ -11,4 +11,4 @@ python demo.py \
   --thresh_ball_pos_mask 0.05 \
   --video_path ../dataset/test/videos/test_1.mp4 \
   --show_image \
-  --save_demo_output
+  --save_demo_output \

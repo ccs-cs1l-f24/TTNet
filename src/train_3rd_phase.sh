@@ -7,7 +7,7 @@
 python main.py \
   --working-dir '../' \
   --saved_fn 'ttnet_3rd_phase' \
-  --no-val \
+  --no_val \
   --batch_size 8 \
   --num_workers 4 \
   --lr 0.0001 \
@@ -20,4 +20,4 @@ python main.py \
   --event_weight 1. \
   --local_weight 1. \
   --pretrained_path ../checkpoints/ttnet_2nd_phase/ttnet_2nd_phase_epoch_30.pth \
-  --smooth-labelling
+  --smooth_labelling

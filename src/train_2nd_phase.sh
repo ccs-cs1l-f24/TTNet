@@ -6,7 +6,7 @@
 python main.py \
   --working-dir '../' \
   --saved_fn 'ttnet_2nd_phase' \
-  --no-val \
+  --no_val \
   --batch_size 8 \
   --num_workers 4 \
   --lr 0.001 \
@@ -22,5 +22,5 @@ python main.py \
   --overwrite_global_2_local \
   --freeze_seg \
   --freeze_global \
-  --smooth-labelling \
+  --smooth_labelling \
   --thresh_ball_pos_mask 0.0001

@@ -27,7 +27,7 @@ An introduction of the project could be found [here (from the authors)](https://
 - **(Update 2024.09.12)**: The implementation could achieve comparative results with the reported results in the TTNet paper. Moreover, I have fixed the wrong implementation in the ball detection module, changed it to the original implementation just like in the paper! I have also provided completely training code in train.sh<br>
 
 - **(2024.09.12)**: The model can achieve **0.9632** on average iou, rmse global **8.9**, rmse local **2.3** rmse_overall: **54.4**, pce: **0.8918** spce: **0.9808**
-  
+
 ## 2. Getting Started
 
 ### Requirement
@@ -127,10 +127,10 @@ The performance of the TTNet strongly depends on the global stage for ball detec
 
 ```shell script
 ./train_1st_phase.sh
-```  
+```
 
 - **2nd phase**: Load the trained weights to the global and the segmentation part, initialize the weight of the local stage with the weights of
-the global stage. In this phase, we train and just update weights of the local and the event modules. (30 epochs)
+  the global stage. In this phase, we train and just update weights of the local and the event modules. (30 epochs)
 
 ```shell script
 ./train_2nd_phase.sh
@@ -194,8 +194,8 @@ If you find any errors or have any suggestions, please contact me. Thank you!
 usage: main.py [-h] [--seed SEED] [--saved_fn FN] [-a ARCH] [--dropout_p P]
                [--multitask_learning] [--no_local] [--no_event] [--no_seg]
                [--pretrained_path PATH] [--overwrite_global_2_local]
-               [--no-val] [--no-test] [--val-size VAL_SIZE]
-               [--smooth-labelling] [--num_samples NUM_SAMPLES]
+               [--no_val] [--no-test] [--val-size VAL_SIZE]
+               [--smooth_labelling] [--num_samples NUM_SAMPLES]
                [--num_workers NUM_WORKERS] [--batch_size BATCH_SIZE]
                [--print_freq N] [--checkpoint_freq N] [--sigma SIGMA]
                [--thresh_ball_pos_mask THRESH] [--start_epoch N]
@@ -233,10 +233,10 @@ optional arguments:
   --overwrite_global_2_local
                         If true, the weights of the local stage will be
                         overwritten by the global stage.
-  --no-val              If true, use all data for training, no validation set
+  --no_val              If true, use all data for training, no validation set
   --no-test             If true, dont evaluate the model on the test set
   --val-size VAL_SIZE   The size of validation set
-  --smooth-labelling    If true, smoothly make the labels of event spotting
+  --smooth_labelling    If true, smoothly make the labels of event spotting
   --num_samples NUM_SAMPLES
                         Take a subset of the dataset to run and debug
   --num_workers NUM_WORKERS
