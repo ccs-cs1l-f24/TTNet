@@ -72,7 +72,7 @@ def process_video(configs):
                     ploted_img = cv2.circle(ploted_img, prediction_ball_final, 10, (255,0,0), 2)
                     cv2.imshow('ploted_img', ploted_img)
                     # cv2.imwrite('ploted_img.png', ploted_img)
-                    cv2.waitKey(10)
+                    cv2.waitKey(0)
                     # time.sleep(0.01)
                 # if configs.save_demo_output:
                 #     cv2.imwrite(os.path.join(configs.frame_dir, '{:06d}.jpg'.format(frame_idx)), ploted_img)
@@ -88,7 +88,7 @@ def process_video(configs):
 
 def plot_detection(img, ball_pos, seg_img, events):
     """Show the predicted information in the image"""
-    # img = cv2.addWeighted(img, 1., seg_img * 255, 0.3, 0)
+    img = cv2.addWeighted(img, 1., seg_img * 255, 0.3, 0)
     img = cv2.circle(img, tuple(ball_pos), 5, (255, 0, 255), -1)
     event_name = 'is bounce: {:.2f}, is net: {:.2f}'.format(events[0], events[1])
     img = cv2.putText(img, event_name, (100, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
@@ -100,6 +100,6 @@ if __name__ == '__main__':
     configs = parse_configs()
     configs.video_path = "../dataset/test/videos/test_1_trimmed.mp4"
     configs.gpu_idx = 0
-    configs.pretrained_path = "../checkpoints/ttnet_1st_phase/ttnet_1st_phase_epoch_30.pth"
+    configs.pretrained_path = "../checkpoints/ttnet.pth"
     configs.show_image = True
     process_video(configs=configs)
