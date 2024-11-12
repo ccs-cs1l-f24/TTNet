@@ -50,7 +50,7 @@ class TTNet_Video_Loader:
 
     def __next__(self):
         self.count += 1
-        if self.count == len(self):
+        if self.count == len(self) - 1:
             raise StopIteration
         # Read image
 
