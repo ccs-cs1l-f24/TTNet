@@ -14,7 +14,7 @@ python main.py \
   --lr_factor 0.1 \
   --gpu_idx 0 \
   --global_weight 5. \
-  --seg_weight 1. \
+  --no_seg \
   --no_local \
   --no_event \
   --smooth_labelling

@@ -4,8 +4,8 @@ import numpy as np
 
 def post_processing(pred_ball_global, pred_ball_local, pred_events, pred_seg, w, thresh_ball_pos_prob, seg_thresh,
                     event_thresh):
-    prediction_global = get_prediction_ball_pos(pred_ball_global, w, thresh_ball_pos_prob)
-    prediction_local = get_prediction_ball_pos(pred_ball_local, w, thresh_ball_pos_prob)
+    prediction_global = get_prediction_ball_pos_right_test(pred_ball_global, thresh_ball_pos_prob)
+    prediction_local = get_prediction_ball_pos_right_test(pred_ball_local, thresh_ball_pos_prob)
     prediction_seg = get_prediction_seg(pred_seg, seg_thresh)
     prediction_events = prediction_get_events(pred_events, event_thresh)
 

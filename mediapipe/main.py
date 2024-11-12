@@ -40,13 +40,13 @@ def draw_landmarks_on_image(rgb_image, detection_result):
 options = PoseLandmarkerOptions(
     base_options=BaseOptions(model_asset_path="pose_landmarker_heavy.task"),
     running_mode=VisionRunningMode.VIDEO,
-    min_pose_detection_confidence=0.7,
-    min_pose_presence_confidence=0.5,
-    min_tracking_confidence=0.7
+    min_pose_detection_confidence=0.8,
+    min_pose_presence_confidence=0.8,
+    min_tracking_confidence=0.8
 )
 
 # Init video capture
-cap = cv2.VideoCapture("../dataset/test/videos/test_1.mp4")
+cap = cv2.VideoCapture("../dataset/test/videos/test_1_trimmed.mp4")
 fps = cap.get(cv2.CAP_PROP_FPS)
 size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
         int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
@@ -82,16 +82,15 @@ def process_video(landmarker, blackout_left):
             to_window = cv2.cvtColor(annotated_image, cv2.COLOR_RGB2BGR)
             cv2.imshow("Image with pose", to_window)
 
+
+            # TODO: make the image smoother by removing min/max and averaging frames
+
             # Collect landmarks for JSON export
             frame_landmarks = {
-                "frame": frame_cnt,
-                "landmarks": []
+                "frame": frame_cnt,                
+                "landmarks": [{"name": f"landmark_{i}", "x": landmark.x, "y": landmark.y, "z": landmark.z, "visibility": landmark.visibility}
+                                for i, landmark in enumerate(pose_result.pose_world_landmarks[0])],
             }
-
-            for idx, pose_world_landmarks in enumerate(pose_result.pose_world_landmarks):
-                landmarks = [{"name": f"landmark_{i}", "x": landmark.x, "y": landmark.y, "z": landmark.z}
-                             for i, landmark in enumerate(pose_world_landmarks)]
-                frame_landmarks["landmarks"] = landmarks
 
             pose_data[data_key].append(frame_landmarks)
 

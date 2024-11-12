@@ -15,7 +15,7 @@ python main.py \
   --lr_factor 0.1 \
   --gpu_idx 0 \
   --global_weight 0. \
-  --seg_weight 0. \
+  --no_seg \
   --event_weight 2. \
   --local_weight 1. \
   --pretrained_path ../checkpoints/ttnet_1st_phase/ttnet_1st_phase_best.pth \
