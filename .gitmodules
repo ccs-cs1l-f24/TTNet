@@ -1,0 +1,3 @@
+[submodule "WHAM"]
+	path = WHAM
+	url = https://github.com/yohanshin/WHAM.git
